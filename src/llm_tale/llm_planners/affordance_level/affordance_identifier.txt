@@ -1,0 +1,140 @@
+The robot is equipped with specific skills for picking or placing objects. 
+Based on a high-level task description, your task is to identify the geometric options available to execute these skills. 
+These options should be described in language terms, such as "pick from the side" or "pick vertically relative to the object".
+
+For the object in the scene:
+    class Object:
+        self.position : np.ndarray[(3,)] # position of the object
+        self.orientation : np.ndarray[(3,)] # orientation of the object, could be None if not important
+        self.attributes: List[Object] # attributes of the object, could be None if not important
+
+    Attributes represent parts of the object, such as a door handle on a fridge. 
+    If an attribute is not specified, it indicates the object does not have any specific attributes. 
+    If orientation is not specified, it means the object's orientation is not crucial for the task.
+    For example: cube = Object(position) means the object cube only has a position attribute, and the orientation is not important, no attributes.
+
+Here are some instructions:
+1. Understand the instructions and the attributes of the objects.
+2. Determine the possible ways the robot can pick or place the object, considering variations in position and orientation.
+3. If there is only one possible way to pick or place the object, provide just that one.
+4. Start by listing possible variations in position and orientation as OUTPUT Comments. Each variation should be numbered, and if no variations exist, write "None" and provide an explanation. Then, provide the OUTPUT.
+5. Before providing any OUTPUT, you think about the knowledge in the examples and how it can be applied to the current task.
+
+Here are some examples.
+
+Instruction: the robot's task is to pick up the cube.
+Objects:
+    CubeA = Object(position)
+OUTPUT Comments: 
+    Position variation: None. The cube can be considered a point with no variation in position.
+    Orientation variation: None. No specific orientation is provided, so picking from the top is a standard approach for a cube.
+OUTPUT: 
+{
+    "1": "pick the box from the top",
+}
+# knowledge: for objects can be considered as a point, normally no variation in position, and picking from the top is a common way.
+
+
+Instruction: the robot's task is to pick the door handle.
+Objects:
+    door = Object(position,orientation,
+    attributes=[door_handle]
+    )
+OUTPUT Comments:  
+    Position variation: None. The door handle is the only pickable part of the door.
+    Orientation variation: None.
+OUTPUT: 
+{
+    "1": "pick the handle of the door"
+}
+# knowledge: for handle of the door or smiliar objects, orientation is typically perpendicular to the surface, 
+# knowledge: for the handle of a free object (pen,bottle,tools), variations in orientation are pick from the top or side.
+
+
+Instruction: the robot's task is to pick up the bottle.
+Objects:
+    bottle = Object(position,orientation) # bottle is standing
+OUTPUT Comments:  
+    Position variation: None. The bottle is normally picked at the centroid if no specific attribute is provided.
+    Orientation variation: 2. When the bottle is standing, common ways to pick it are from the top or the side.
+OUTPUT:
+{
+    "1": "pick the bottle from the top",
+    "2": "pick the bottle from the side"
+}
+# knowledge: for standing objects, the centroid is the common pickable part, and the orientation could be from the top or the side.
+
+
+Instruction: the robot's task is to pick up the pen.
+Objects:
+    pen = Object(position,orientation, # pen is lying on the table
+        attributes=[head,end]
+        )
+OUTPUT Comments:  
+    Position variation: 2. There are two options (head, end) of picking position.
+    Orientation variation: None. The pen is lying on the table, so the robot can only pick it from the top.
+OUTPUT:
+{
+    "1": "pick the pen from the head",
+    "2": "pick the pen from the end",
+}
+
+Instruction: the robot's task is to pick up the pen.
+Objects:
+    pen = Object(position,orientation, # pen is standing on the table
+            attributes=[end]
+        )
+OUTPUT Comments:
+    Position variation: None. The pen is standing, and without specific attributes, the centroid is the only pickable part.
+    Orientation variation: 2. For an object standing on the table, you can pick from the top and pick from the side if no extra constraints.
+OUTPUT:
+{
+    "1": "pick the end of the pen from the top",
+    "2": "pick the end of the pen from the side",
+}
+
+
+INPUT: the robot's task is to place(transport) the book in the shelf.
+Objects:
+    book = Object(position,orientation)
+    shelf = Object(position,orientation) 
+OUTPUT Comments:
+    Position variation: None, the book centroid should be aligned with the shelf centroid.
+    Orientation variation: 2, place the book vertically or horizontally in the shelf are two common ways.
+OUTPUT: 
+{
+    "1": "place the book vertically in the shelf",
+    "2": "place the book horizontally in the shelf"
+}
+
+INPUT: the robot's task is insert the USB to USB port
+Objects:
+    USB = Object(position,orientation
+        attributes=[head,end]
+    )
+    USB_port = Object(position,orientation)
+OUTPUT Comments:
+    Position variation: None, USB head should be aligned with the USB port.
+    Orientation variation: None, align the tool axis is the only way for most insert tasks.
+OUTPUT: 
+{
+    "1": "insert the USB, align its centerline with the USB centerline, head position should be aligned with the USB port position",
+}
+
+INPUT: transport the cube to target position
+Objects:
+    cube = Object(position,orientation=None)
+    target = Object(position,orientation=None)
+OUTPUT Comments:
+    Position variation: None, the cube centroid should be aligned with the target centroid.
+    Orientation variation: None, as no specific orientation is provided, the translation to the target would be the only way.
+OUTPUT:
+{
+    "1": "transport the cube to the target Position".
+}
+
+
+Instruction:#
+Objects:#
+
+

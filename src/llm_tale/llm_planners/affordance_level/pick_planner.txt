@@ -1,0 +1,102 @@
+The robot is performing a task to achieve a high-level goal. Please determine what is the target gripper position and orientation.
+
+Knowledge Base:
+1. Picking Position: You can choose the centroid of the object or a specific attribute provided for the object as the picking position.
+2. Orientation: The gripper's orientation is defined using the gripper's z-axis and x-axis:
+    Gripper z-axis: Represents the rotation axis of the robot gripper.
+    Gripper x-axis: Represents the axis perpendicular to the direction of the gripper opening. It is typically aligned with the object's longer axis that is perpendicular to the gripper's z-axis. However, specifying the x-axis may not always be necessary.
+3. To describe the Object's Orientation:
+    z_axis: The height axis of the object.
+    major_axis: The longest axis in the x, y plane of the object.
+    minor_axis: The shortest axis in the x, y plane of the object,usually align with the Gripper y-axis(direction for gripper open/close).
+    plane_vertical: The vertical axis of the object's plane.
+    ABSOLUTE_VERTICAL: The vertical axis of the world.
+    DEFAULT: Used when only one axis is aligned with the object, and default values are applied for other axes. This is typically used for highly symmetrical, small objects like cubes or spheres, or for centrally symmetrical objects with a small radius, such as cylinders. For other objects, avoid using DEFAULT.
+Based on the instruction, determine the direction the gripper's z-axis should point. Then, choose an appropriate gripper x-axis from the axes perpendicular to the z-axis.
+4. Pay attention to the status of the object: 
+    If the object is lying down, its z-axis should be vertical, and it can be picked from the top.
+    If the object is standing, it can also be picked from the side. In this case, the z-axis should align with the major axis of the object.
+
+Examples:
+
+Instruction: pick the cube from the top.
+Objects:
+    CubeA = Object(position)
+Comments: picking from the top means the gripper's z-axis should be ABSOLUTE_VERTICAL, and the cube is a symmetrical small object, so we can use DEFAULT for the x-axis.
+RESPONSE:
+{
+    "gripper position": "CubeA.centroid",
+    "gripper ori z_axis": "ABSOLUTE_VERTICAL",
+    "gripper ori x_axis": "DEFAULT"
+}
+
+Instruction: the robot's task is to pick up the medicine box from the top. 
+Objects:
+    medicine_box = Object(position,orientation) # bottle is standing
+Comments: the box is standing, for picking from the top, we choose ABSOLUTE_VERTICAL as z_axis, as major is in the horzontal plane and box is not a small object, we choose major_axis as x_axis.
+RESPONSE:
+{
+    "gripper position": "detergent_bottle.centroid",
+    "gripper ori z_axis": "ABSOLUTE_VERTICAL",
+    "gripper ori x_axis": "detergent_bottle.major_axis"
+}
+
+Instruction: the robot's task is to pick up the detergent bottle from the side.
+Objects:
+    detergent_bottle = Object(position,orientation) # bottle is standing
+Comments: the bottle is standing, for picking from the side, we choose major_axis as z_axis for the gripper, in this point, we choose z_axis of the object as x_axis for the gripper.
+{
+    "gripper position": "detergent_bottle.centroid",
+    "gripper ori z_axis": "detergent_bottle.major_axis",
+    "gripper ori x_axis": "detergent_bottle.z_axis"
+}
+
+
+INPUT: the robot's task is to pick up the middle cabinet handle.
+OBJECTS: 
+    middle_cabinet = Object(position,orientation,
+        attributes=[handle]
+    )
+Comments: the handle is the pickable part of the cabinet, and the orientation is typically perpendicular to the surface, in this surface, we choose major_axis as x_axis for the gripper.
+RESPONSE:
+{
+    "gripper position": "middle_cabinet.handle",
+    "gripper ori z_axis": "middle_cabinet.plane_vertical,
+    "gripper ori x_axis": "middle_cabinet.handle.major_axis"
+}
+
+Instruction: the robot's task is to pick up the pen from the end.
+Objects:
+    pen = Object(position,orientation, # pen is lying on the table
+        attributes=[head,end]
+        )
+Comments: the pen is lying on the table, so the robot can only pick it from the top, in this case, we choose ABSOLUTE_VERTICAL as z_axis for the gripper, and major_axis as x_axis for the gripper.
+RESPONSE:
+{
+    "gripper position": "pen.end",
+    "gripper ori z_axis": "ABSOLUTE_VERTICAL",
+    "gripper ori x_axis": "pen.major_axis"
+}
+
+Instruction: the robot's task is to pick up the pen from the side.
+Objects:
+    pen = Object(position,orientation, # pen is standing on the table
+        attributes=[handle]
+        )
+Comments: To pick up a standing cylindrical object from the side, we set the gripper's x-axis to ABSOLUTE_VERTICAL. Since the object is cylindrical, in the horizontal plane, we set the gripper's z-axis to DEFAULT.
+RESPONSE:
+{
+    "gripper position": "pen.handle",
+    "gripper ori z_axis": "DEFAULT",
+    "gripper ori x_axis": "ABSOLUTE_VERTICAL"
+}
+
+
+Instructions for Responding:
+1. First, analyze how to complete the task based on the provided instructions and object information. Write this reasoning in Comments.
+2. Then, provide the final position and orientation in the RESPONSE section.
+3. Use the knowledge and examples provided as guidance.
+
+Instruction:#
+Objects:#
+RESPONSE: 

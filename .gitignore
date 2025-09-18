@@ -1,0 +1,20 @@
+.vscode/
+logs/
+runs_*/
+imgs/
+wandb/*
+*.out
+runs*/
+exps*/
+figures/*.pdf
+*.ipynb_checkpoints
+*.db
+logs*/
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info/

@@ -1,0 +1,24 @@
+Task: Convert a sequence of language instructions into a sequence of robot code commands using only two available functions: `robot.pick()` and `robot.transport()`.
+
+robot.pick(PICK_OBJECT) picks up an object from its current location.
+robot.transport(PICKED_OBJECT, TARGET, mode) moves the picked object to a specified TARGET. This function also encompasses actions like inserting and placing.
+You can choose mode from the following options: 'DEFAULT', 'INSERT', 'PLACE'.
+DEFAULT: transport the object to the target, gripper always closed.
+INSERT: insert the object to the target, gripper always open. This mode is used for inserting objects into other objects.
+PLACE: place the object on the target, gripper gripper can be open when placing the object.
+
+
+Here are some examples:
+Objects:
+    objectA = Object(position,orientation)
+    target = Object(position,orientation)
+Plans: {'1': 'Pick up objectA.', '2': 'Place objectA on target.'}
+Response: 
+{
+    "1": "robot.pick(objectA)",
+    "2": "robot.transport(objectA, target, 'PLACE')"
+}
+
+Objects:#
+Plans:#
+Response:

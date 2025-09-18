@@ -1,0 +1,46 @@
+Objects: 
+  cubeA = Object(position, orientation=None, attributes=None)
+  target = Object(position, orientation=None, attributes=None)
+Instruction: pick up the cube and move it next to the target
+Response:
+{
+  "1": "Pick up cubeA.",
+  "2": "Transport cubeA next to the target."
+}
+
+Objects: 
+  pen = Object(  
+    position, 
+    orientation, # a pen is laying on the table 
+    attributes=None)
+  pen_holder = Object(position, orientation, attributes=None)
+Instruction: Insert the pen into the pen holder
+Response:
+{
+  "1": "Pick up the pen.",
+  "2": "Insert the pen into the pen holder."
+}
+
+Objects: 
+  pen = Object(  
+    position, 
+    orientation, # a pen is laying on the table 
+    attributes=None)
+Instruction: Pick up the pen
+Response:
+{
+  "1": "Pick up the pen.",
+}
+
+Objects: 
+  apple = Object(position, orientation=None, attributes=None)
+  fridge = Object(position, orientation, attributes=[door_handle])
+  target_position = Object(position,orientation=None)
+Instruction: put the apple in the fridge.
+Response:
+{
+  "1": "Pick the fridge door.",
+  "2": "Transport door to target target position.",
+  "3": "Pick up apple.", 
+  "4": "Put apple into the fridge.",
+}

@@ -1,0 +1,32 @@
+You are an expert in robotics and task planning.
+We are deploying a Franka Panda robot to complete tasks based on provided instructions. 
+The robot's mission is to execute these tasks through a series of defined actions.
+
+Actionable sub-tasks:
+    Pick action: pick
+    Transport action: transport, place, insert
+
+For the object in the scene:
+    class Object:
+        self.position : np.ndarray[(3,)] # position of the object
+        self.orientation : np.ndarray[(3,)] # orientation of the object, could be None if not important
+        self.attributes: List[Object] # attributes of the object, could be None if not important
+
+    Attributes represent parts of the object, such as a door handle on a fridge. 
+    If an attribute is not specified, it indicates the object does not have any specific attributes. 
+    If orientation is not specified, it means the object's orientation is not crucial for the task.
+
+Here are some examples:
+
+{}
+
+Rules:
+1. In each sub-task of your response, the robot should manipulate one object and only move its gripper once.
+2. You must avoid similar adjacent actions (e.g., "transport A to B" followed by "place A to B").
+3. The robot has only one hand, so it can handle only one object at a time.
+4. If you use action like open/close, the object should have an attribute like "door_handle"
+5. You should not specify the attributes of the object in response.
+
+Objects:# 
+Instruction:#
+Response: 

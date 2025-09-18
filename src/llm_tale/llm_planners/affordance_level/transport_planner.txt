@@ -1,0 +1,123 @@
+The robot is performing a task to achieve a high-level goal, which requires transporting the object to a specific location. 
+The object must be aligned correctly with the target position and orientation.
+
+Knowledge Base:
+You should use object-centric representation to determine the alignment of the object with the target object.
+Orientation:
+    DEFAULT: Use this orientation when the object's orientation is not specified or is not critical. The robot gripper will adopt a default orientation.
+    TRANSLATION: The robot gripper maintains the object's original orientation. This is used when there is no need for a specific placement orientation or when the object connect to the environment with a joint (e.g., a door handle). In such cases, the object is picked up and placed without changing its orientation.
+    ABSOLUTE_VERTICAL: The vertical axis of the world.
+To describe the Object's Orientation:
+    z_axis: The height axis of the object.
+    major_axis: The longest axis in the x, y plane of the object.
+    minor_axis: The shortest axis in the x, y plane of the object,usually align with the Gripper y-axis(direction for gripper open/close).
+    plane_vertical: The vertical axis of the object's plane.
+Transportation axis: 
+    the axis the robot is approaching the placement position. normally from the from the top for placing, None for reaching.
+
+
+Examples:
+
+Instruction: place the cube in the drawer.
+Objects:
+    CubeA = Object(position,orientation=None)
+    drawer = Object(position,orientation=None)
+Comments: no orientation is provided, so use default orientation for the gripper. It is a place task, so the transportation axis is ABSOLUTE_VERTICAL(from the top).
+RESPONSE:
+{
+    "CubeA.centroid": "drawer.centroid",
+    "orientation": "DEFAULT"
+    "transportation axis": "ABSOLUTE_VERTICAL"
+}
+
+INPUT: the robot's task is to place the box vertically in the fridge.
+Objects:
+    detergent_bottle = Object(position,orientation) # bottle is standing
+    fridge = Object(position,orientation)
+Comments: To place vertically, the z_axis of the object should be aligned with the ABSOLUTE_VERTICAL. For placing the object in the fridge, robot should goes from the front, so the transportation axis is fridge.plane_vertical. As the z_axis already aligns with ABSOLUTE_VERTICAL, we should deside the axis in horizontal plane, normally the longer axis in that plane-major_axis should align with plane_vertical of the fridge.
+RESPONSE:
+{
+    # position
+    "detergent_bottle.centroid": "fridge.centroid",
+    # orientation
+    "detergent_bottle.z_axis": "ABSOLUTE_VERTICAL",
+    "detergent_bottle.major_axis": "fridge.plane_vertical"
+    # transportation axis
+    "transportation axis": "fridge.plane_vertical",
+}
+
+INPUT: the robot's task is to place the book horizontally in the shelf.
+Objects:
+    book = Object(position,orientation)
+    shelf = Object(position,orientation)
+Comments: To place horizontally, the z_axis of the object should be aligned with the shelf.plane_vertical. For placing the object in the shelf, robot should goes from the front, so the transportation axis is shelf.plane_vertical.
+RESPONSE:
+{
+    # position
+    "book.centroid": "shelf.centroid",
+    # orientation
+    "book.z_axis": "shelf.plane_vertical",
+    "book.major_axis": "ABSOLUTE_VERTICAL"
+    # transportation axis
+    "transportation axis": "shelf.plane_vertical",
+}
+
+INPUT: place the USB in the USB port.
+Objects:
+    USB = Object(position,orientation
+        attributes=[head,end] # for USB major_axis is the centerline
+    )
+    USB_port = Object(position,orientation)
+Comments: USB head should be aligned with the USB port. The centerline of the USB should be aligned with the centerline of the USB port. The minor_axis of the USB should be aligned with the minor_axis of the USB port in order to insert the USB correctly.The robot should approach the USB port through the centerline, so the transportation axis is USB_port.major_axis.
+RESPONSE:
+{
+    # position
+    "USB.head": "USB_port.centroid",
+    # orientation
+    "USB.major_axis": "USB_port.major_axis",
+    "USB.minor_axis": "USB_port.minor_axis",
+    # transportation axis
+    "transportation axis": "USB_port.major_axis",
+}
+
+INPUT: transport pen to the target.
+Objects:
+    pen = Object(position,orientation)
+    target = Object(position,orientation)
+Comments: This is a reaching task, so orientation is TRANSLATION and the transportation axis is None. The pen should be aligned with the target position.
+RESPONSE:
+{
+    # position
+    "pen.centroid": "target.centroid",
+    # orientation
+    "orientation": "TRANSLATION",
+    # transportation axis
+    "transportation axis": "None",
+}
+
+INPUT: open the cupboard handle to the target position.
+Objects:
+    cupboard = Object(position,orientation,
+        attributes=[handle]
+    )
+    target = Object(position,orientation)
+Comments: As handle is have connect to the environment with a joint, so the orientation is TRANSLATION. The cupboard handle should be aligned with the target position. It is a reaching task, so the transportation axis is None.
+RESPONSE:
+{
+    # position
+    "cupboard.handle": "target.centroid",
+    # orientation
+    "Orientation': "TRANSLATION",
+    # transportation axis
+    "transportation axis": "None",
+}
+
+Instructions for Responding:
+1. First, analyze how to complete the task based on the provided instructions and object information. Write this reasoning in Comments.
+2. Then, provide the final gripper position and orientation in the RESPONSE section.
+3. Use the knowledge and examples provided as guidance.
+
+Instruction:#
+Objects:#
+Response:
+
