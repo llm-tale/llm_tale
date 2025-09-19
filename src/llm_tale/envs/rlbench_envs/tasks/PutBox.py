@@ -2,8 +2,6 @@ import os
 import torch
 import gymnasium.spaces as spaces
 import numpy as np
-import functools
-import inspect
 from pyrep.objects.vision_sensor import VisionSensor
 
 from llm_tale.envs.rlbench_envs.utils.skrl_wrapper import _Wrapper
@@ -31,28 +29,6 @@ from rlbench.backend.spawn_boundary import SpawnBoundary
 GROCERY_NAMES = [
     "chocolate jello",
 ]
-
-
-def log_start_end(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        file = func.__code__.co_filename
-        line = func.__code__.co_firstlineno
-        print(f"Starting {func.__name__} (defined in {file}:{line})...")
-        result = func(*args, **kwargs)
-        print(f"Finished {func.__name__} (defined in {file}:{line})")
-        return result
-
-    return wrapper
-
-
-def decorate_all_methods(decorator):
-    def decorate(cls):
-        for name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
-            setattr(cls, name, decorator(method))
-        return cls
-
-    return decorate
 
 
 class PutBox(Task):
