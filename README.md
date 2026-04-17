@@ -1,18 +1,31 @@
-# LLM-TALE
+# LLM-TALE: LLM-Guided Task- and Affordance-Level Exploration in Reinforcement Learning
 
-This repository contains the original code for the paper *LLM-Guided Task- and Affordance-Level Exploration in Reinforcement Learning* (LLM-TALE).
+<p align="center">
+  <a href="https://arxiv.org/abs/2509.16615"><img src="https://img.shields.io/badge/arXiv-2509.16615-b31b1b.svg" alt="arXiv"/></a>
+  <a href="https://llm-tale.github.io/"><img src="https://img.shields.io/badge/Project-Page-4c8cff.svg" alt="Project Page"/></a>
+  <a href="https://2026.ieee-icra.org/"><img src="https://img.shields.io/badge/ICRA-2026-5a3696.svg" alt="ICRA 2026"/></a>
+  <a href="https://www.python.org/downloads/release/python-3100/"><img src="https://img.shields.io/badge/python-3.10-blue.svg" alt="Python 3.10"/></a>
+</p>
+
+Official code for the paper:
+
+> **LLM-Guided Task- and Affordance-Level Exploration in Reinforcement Learning**<br>
+> Jelle Luijkx, Runyu Ma, Zlatan Ajanović, Jens Kober — *ICRA 2026*<br>
+> [[arXiv]](https://arxiv.org/abs/2509.16615) [[Project page]](https://llm-tale.github.io/)
+
+## Overview
+
+LLM-TALE is a framework that uses an LLM's planning to directly steer RL exploration at two levels: a **task level** (which subgoal to pursue) and an **affordance level** (how to interact with the relevant object). Unlike prior approaches that assume optimal LLM-generated plans or rewards, LLM-TALE corrects suboptimality online and explores multimodal affordance-level plans without human supervision, improving sample efficiency and success rates on robotic manipulation benchmarks and transferring zero-shot to a real robot.
 
 ## Installation
 
 ### Prerequisites: install `uv`
 
-We advice to use uv to install the `llm-tale` package.
-Please install `uv` following the [installation instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation) if you don't have it installed.
+We advise using `uv` to install the `llm-tale` package. Please install `uv` by following the [installation instructions](https://github.com/astral-sh/uv?tab=readme-ov-file#installation) if you don't have it yet.
 
-### Prerequisites: setup RLBench (not required for ManiSkill tasks)
+### Prerequisites: set up RLBench (not required for ManiSkill tasks)
 
 Install CoppeliaSim:
-
 
 ```bash
 # set env variables
@@ -25,33 +38,31 @@ mkdir -p $COPPELIASIM_ROOT && tar -xf CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz 
 rm -rf CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz
 ```
 
-Make sure the env variables are set when you run RLBench experiments and that you can run RLBench headless by following [these instructions](https://github.com/stepjam/RLBench?tab=readme-ov-file#running-headless).
+Make sure the environment variables above are set whenever you run RLBench experiments, and verify you can run RLBench headless by following [these instructions](https://github.com/stepjam/RLBench?tab=readme-ov-file#running-headless).
 
 ### Install `llm-tale`
 
-Clone:
+Clone the repository:
 
 ```bash
 git clone git@github.com:llm-tale/llm_tale.git
 cd llm_tale
 ```
 
-Create and source the virtual environment:
+Create and activate the virtual environment:
 
 ```bash
 uv venv --python 3.10
 source .venv/bin/activate
 ```
 
-Install:
+Install the package:
 
 ```bash
 uv pip install -e .
 ```
 
-## Test
-
-To verify your installation you can run:
+### Verify the installation
 
 ```bash
 pytest tests/test_tasks.py
@@ -59,40 +70,55 @@ pytest tests/test_tasks.py
 
 ## Tasks
 
-ManiSkill tasks (PickCube, StackCube, PegInsert):
+**ManiSkill** (PickCube, StackCube, PegInsert):
+
 <p align="center">
-  <img src="videos/pick_cube.gif" width="30%"  alt="PickCube"/>
-  <img src="videos/stack_cube.gif" width="30%"  alt="StackCube"/>
-  <img src="videos/peg_insert.gif" width="30%"  alt="PegInsert"/>
+  <img src="videos/pick_cube.gif" width="30%" alt="PickCube"/>
+  <img src="videos/stack_cube.gif" width="30%" alt="StackCube"/>
+  <img src="videos/peg_insert.gif" width="30%" alt="PegInsert"/>
 </p>
 
-RLBench tasks (TakeLid, OpenDrawer, PutBox):
+**RLBench** (TakeLid, OpenDrawer, PutBox):
+
 <p align="center">
-  <img src="videos/take_lid.gif" width="30%"  alt="TakeLid"/>
-  <img src="videos/open_drawer.gif" width="30%"  alt="OpenDrawer"/>
-  <img src="videos/put_box.gif" width="30%"  alt="PutBox"/>
+  <img src="videos/take_lid.gif" width="30%" alt="TakeLid"/>
+  <img src="videos/open_drawer.gif" width="30%" alt="OpenDrawer"/>
+  <img src="videos/put_box.gif" width="30%" alt="PutBox"/>
 </p>
 
+Additional videos, including real-robot rollouts, are available on the [project page](https://llm-tale.github.io/).
 
-## Reproduce results
+## Reproducing the results
 
-For LLM-BC run:
+Run the LLM-BC baseline:
+
 ```bash
 bash scripts/run_llm_bc.sh
 ```
 
-For LLM-TALE run:
+Run LLM-TALE:
+
 ```bash
 bash scripts/run_llm_tale.sh
 ```
 
-## LLM Code generation
+## LLM code generation
 
-To generate or inspect the LLM code, you can check out the `code_generation` notebook under `notebooks`.
+To generate or inspect the code produced by the LLM, see the `code_generation` notebook under `notebooks/`.
 
-## Credits
+## Citation
 
-For the prompt structure, we took inspiration from [DROC](https://github.com/Stanford-ILIAD/droc).
+If you find this work useful, please consider citing:
 
-Our TD3 and PPO agents are based on [SKRL examples](https://skrl.readthedocs.io/en/latest/intro/examples.html).
+```bibtex
+@inproceedings{luijkx2026llmtale,
+  title     = {{LLM}-Guided Task- and Affordance-Level Exploration in Reinforcement Learning},
+  author    = {Luijkx, Jelle and Ma, Runyu and Ajanovi{\'c}, Zlatan and Kober, Jens},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2026}
+}
+```
 
+## Acknowledgements
+
+For the prompt structure, we took inspiration from [DROC](https://github.com/Stanford-ILIAD/droc). Our TD3 and PPO agents are based on the [SKRL examples](https://skrl.readthedocs.io/en/latest/intro/examples.html).
